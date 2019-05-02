@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
           if (data.status) {
             Swal.fire({
               type: "success",
-              title: "สาเร็จ",
+              title: "สำเร็จ",
               text: "Login success!"
             });
 

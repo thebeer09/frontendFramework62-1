@@ -16,7 +16,39 @@ export class HomeComponent implements OnInit {
   currentPage = 1;
   users = [];
   constructor(private router: Router, private backendService: BackendService) {}
+
   ngOnInit() {
+    this.backendService.verifyToken().subscribe(
+      data => {
+        if (!data.verify) {
+          Swal.fire({
+            type: "error",
+            title: "แจ้งเตือน",
+            text: "ไม่มีสิทธิ์เข้าใช้งานในส่วนนี้"
+          });
+          this.backendService.logout();
+          this.router.navigate(["login"]);
+        } else {
+          if (this.backendService.decodeToken()) {
+          } else {
+            Swal.fire({
+              type: "error",
+              title: "แจ้งเตือน",
+              text: "ไม่มีสิทธิ์เข้าใช้งานในส่วนนี้"
+            });
+            this.backendService.logout();
+            this.router.navigate(["login"]);
+          }
+        }
+      },
+      err => {
+        Swal.fire({
+          type: "error",
+          title: "แจ้งเตือน",
+          text: "ไม่มีสิทธิ์เข้าใช้งานในส่วนนี้"
+        });
+      }
+    );
     $(document).ready(function() {
       $("#sidebarCollapse").on("click", function() {
         $("#sidebar").toggleClass("active");
@@ -57,5 +89,9 @@ export class HomeComponent implements OnInit {
     $event.preventDefault();
     this.currentPage = this.currentPage - 1 < 1 ? 1 : this.currentPage - 1;
     this.listUserPagination();
+  }
+  logout() {
+    this.backendService.logout();
+    this.router.navigate(["login"]);
   }
 }
